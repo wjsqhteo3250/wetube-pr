@@ -1,0 +1,7 @@
+extends ../layout
+
+block content 
+    form(method="post")
+        input(type="text" placeholder="title" name="title" value=video.title)
+        textarea(name="description", cols="30", rows="10" placeholder="descriptioin")= video.description
+        input(type="submit" value="Update")  

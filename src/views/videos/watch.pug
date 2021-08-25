@@ -1,0 +1,10 @@
+extends ../layout
+
+block content 
+    h1= video.title
+    p= video.description
+    a(href=`/video/${video._id}/update`) 
+        button update 
+    form(method="post" action=`/video/${video._id}/delete`)
+        input(type="submit", value="delete")
+        

@@ -1,10 +1,10 @@
 import express, { Router } from "express";
-import { createVideo, deleteVideo, updateVideo, watchVideo } from "../controller/videoController";
+import { deleteVideo, getUploadVideo, postUploadVideo, getUpdateVideo, watchVideo, postUpdateVideo } from "../controller/videoController";
 
 const route = express.Router();
 
-route.get("/create", createVideo);
-route.get("/:id(\\d+)", watchVideo);
-route.get("/:id(\\d+)/update", updateVideo);
-route.get("/:id(\\d+)/delete", deleteVideo);
+route.route("/upload").get(getUploadVideo).post(postUploadVideo);
+route.get("/:id([a-z0-9]{24})", watchVideo);
+route.route("/:id([a-z0-9]{24})/update").get(getUpdateVideo).post(postUpdateVideo);
+route.post("/:id([a-z0-9]{24})/delete", deleteVideo);
 export default route;

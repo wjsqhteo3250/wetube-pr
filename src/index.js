@@ -1,3 +1,4 @@
+import "./db";
 import express from "express";
 import pug from "pug";
 import morgan from "morgan";
@@ -8,6 +9,7 @@ import userRouter from "./router/userRouter";
 const app = express();
 
 app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
