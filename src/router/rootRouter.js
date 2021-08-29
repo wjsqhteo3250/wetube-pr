@@ -1,10 +1,10 @@
 import express from "express";
-import { join, login } from "../controller/userController";
+import { getJoin, getLogin, postJoin, postLogin } from "../controller/userController";
 import { home } from "../controller/videoController";
 const route = express.Router();
 
 route.get("/", home);
-route.get("/login", login);
-route.get("/join", join);
+route.route("/login").get(getLogin).post(postLogin);
+route.route("/join").get(getJoin).post(postJoin);
 
 export default route;

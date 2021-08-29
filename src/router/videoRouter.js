@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import express from "express";
 import { deleteVideo, getUploadVideo, postUploadVideo, getUpdateVideo, watchVideo, postUpdateVideo } from "../controller/videoController";
 
 const route = express.Router();

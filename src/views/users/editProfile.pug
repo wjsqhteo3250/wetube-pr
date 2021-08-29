@@ -1,0 +1,10 @@
+extends ../layout
+
+block content 
+    if errorMessage 
+        span= errorMessage
+    form(method="post") 
+        input(type="text" name="name" placeholder="name" value=user.name)
+        input(type="email" name="email" placeholder="email" value=user.email)
+        input(type="submit" value="change")
+    a(href="/user/change-password") Change Password 

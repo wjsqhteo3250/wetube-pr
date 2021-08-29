@@ -5,7 +5,11 @@ header
         ul 
             li 
                 a(href="/") Home 
-            li 
-                a(href="/login") Login
-            li 
-                a(href="/join") Join    
+            if !loggedIn
+                li 
+                    a(href="/join") Join
+                li 
+                    a(href="/login") Login
+            else
+                li
+                    a(href=`/user/${user._id}`)= user.name 

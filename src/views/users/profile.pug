@@ -1,0 +1,8 @@
+extends ../layout
+
+block content
+    h2 name : #{user.name}
+    h2 email : #{user.email}
+    a(href=`${user._id}/edit`) edit profile 
+    form(action=`${user._id}/delete` method="post")
+        input(type="submit" value="Delete")  
