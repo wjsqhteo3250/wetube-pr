@@ -26,7 +26,7 @@ export const postJoin = async (req, res) => {
 export const startGithubLogin = (req, res) => {
     const baseUrl = "https://github.com/login/oauth/authorize";
     const config = {
-        client_id: process.env.CLIENT_ID,
+        client_id: process.env.GITHUB_CLIENT_ID,
         scope: "read:user user:email"
     }
     const params = new URLSearchParams(config).toString();
@@ -37,8 +37,8 @@ export const startGithubLogin = (req, res) => {
 export const githubRedirect = async (req, res) => {
     const baseUrl = "https://github.com/login/oauth/access_token";
     const config = {
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
         code: req.query.code
     }
     const params = new URLSearchParams(config).toString();
@@ -68,7 +68,7 @@ export const githubRedirect = async (req, res) => {
         }
         let user = await User.findOne({ email: emailObj.email });
         if (!user) {
-            user = await await User.create({
+            user = await User.create({
                 name: userData.name ? userData.name : emailObj.email.split("@")[0],
                 email: emailObj.email,
                 avatarUrl: userData.avatar_url,
@@ -81,6 +81,64 @@ export const githubRedirect = async (req, res) => {
         return res.redirect("/");
     } else {
         return res.redirect("/login");
+    }
+}
+
+export const startNaverLogin = (req, res) => {
+    const baseUrl = "https://nid.naver.com/oauth2.0/authorize"
+    const config = {
+        response_type: "code",
+        client_id: process.env.NAVER_CLIENT_ID,
+        redirect_uri: "http://localhost:4000/user/naverRedirect",
+        state: "state"
+    }
+    const params = new URLSearchParams(config).toString();
+    const finalUrl = `${baseUrl}?${params}`;
+    return res.redirect(finalUrl);
+}
+
+export const naverRedirect = async (req, res) => {
+    const { query: { code, state } } = req;
+    const baseUrl = "https://nid.naver.com/oauth2.0/token";
+    const config = {
+        grant_type: "authorization_code",
+        client_id: process.env.NAVER_CLIENT_ID,
+        client_secret: process.env.NAVER_CLIENT_SECRET,
+        code,
+        state
+    }
+    const params = new URLSearchParams(config).toString();
+    const finalUrl = `${baseUrl}?${params}`;
+    const tokenData = await (await fetch(finalUrl, {
+        method: "post",
+        headers: {
+            Accept: "application/json",
+        }
+    })).json();
+    if ("access_token" in tokenData) {
+        const { access_token } = tokenData;
+        const apiUrl = 'https://openapi.naver.com/v1/nid/me';
+        const userData = await (await fetch(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        })).json();
+        const email = userData.response.email;
+        let user = await User.findOne({ email });
+        if (!user) {
+            user = await User.create({
+                name: userData.name ? userData.response.name : email.split("@")[0],
+                email: email,
+                avatarUrl: userData.response.profile_image,
+                password: "",
+                socialOnly: true,
+            })
+        }
+        req.session.loggedIn = true;
+        req.session.user = user;
+        return res.redirect("/");
+    } else {
+        res.redirect("/join");
     }
 }
 
@@ -97,8 +155,19 @@ export const getChangePassword = (req, res) => {
 export const postChangePassword = async (req, res) => {
     const { body: { oldPassword, newPassword, newPassword2 }, session: { user } } = req;
     const ok = await bcrypt.compare(oldPassword, user.password);
-    console.log(ok);
-    res.redirect("/")
+    if (!ok) {
+        return res.render("users/changePassword", { pageTitle: "change password", errorMessage: "old password is not correct" })
+    } else {
+        if (newPassword !== newPassword2) {
+            return res.render("users/changePassword", { pageTitle: "change password", errorMessage: "new password is not match" })
+        } else {
+            const userData = await User.findById(user._id)
+            userData.password = newPassword;
+            await userData.save();
+            req.session.user = userData;
+            return res.redirect("/");
+        }
+    }
 }
 
 export const getEditProfile = (req, res) => {
