@@ -13,5 +13,6 @@ header
             else
                 li
                     a(href=`/user/${user._id}`)= user.name 
+                        img(src=user.avatarUrl width="20px" height="20px") 
                 li 
                     a(href="/user/logout") Logout 

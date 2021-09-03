@@ -3,7 +3,10 @@ extends ../layout
 block content 
     if errorMessage 
         span= errorMessage
-    form(method="post") 
+    img(src=user.avatarUrl width="50px" height="50px")
+    form(method="post" enctype="multipart/form-data") 
+        label(for="avatar") Avatar
+        input(type="file" name="avatar" id="avatar" accept="image/*") 
         input(type="text" name="name" placeholder="name" value=user.name)
         input(type="email" name="email" placeholder="email" value=user.email)
         input(type="submit" value="change")

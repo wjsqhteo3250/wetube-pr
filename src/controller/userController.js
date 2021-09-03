@@ -175,7 +175,7 @@ export const getEditProfile = (req, res) => {
 }
 
 export const postEditProfile = async (req, res) => {
-    const { body: { name, email }, params: { id }, session: { user } } = req;
+    const { body: { name, email }, params: { id }, session: { user }, file } = req;
     const nameExist = await User.exists({ name })
     const emailExist = await User.exists({ email })
     if (nameExist && user.name !== name) {
@@ -185,8 +185,9 @@ export const postEditProfile = async (req, res) => {
         return res.status(403).render("users/editProfile", { errorMessage: "email already exist" })
     }
     const changeedUser = await User.findByIdAndUpdate(id, {
-        name, email
-    });
+        name, email,
+        avatarUrl: file ? "/" + file.path : user.avatarUrl
+    }, { new: true });
     req.session.user = changeedUser;
     return res.redirect(`/user/${id}`);
 }

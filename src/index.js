@@ -24,6 +24,7 @@ app.use(localsMiddleware);
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
+app.use("/uploads", express.static("uploads"));
 app.use("/", rootRouter);
 app.use("/video", videoRouter);
 app.use("/user", userRouter);
