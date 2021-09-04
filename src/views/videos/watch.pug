@@ -1,10 +1,14 @@
 extends ../layout
 
 block content 
+    video(src="/"+ video.fileUrl controls) 
     h1= video.title
     p= video.description
-    a(href=`/video/${video._id}/update`) 
-        button update 
-    form(method="post" action=`/video/${video._id}/delete`)
-        input(type="submit", value="delete")
+    p created by 
+        a(href=`/user/${video.owner._id}`)= video.owner.name
+    if user._id === String(video.owner._id)
+        a(href=`/video/${video._id}/update`) 
+            button update 
+        form(method="post" action=`/video/${video._id}/delete`)
+            input(type="submit", value="delete")
         

@@ -1,7 +1,9 @@
 extends ../layout
 
 block content 
-    form(method="post")
+    form(method="post" enctype="multipart/form-data")
+        label(for="Video") Video
+        input(type="file" id="Video" name="video" accept="video/*" )
         input(type="text" placeholder="title" name="title")
         textarea(name="description", cols="30", rows="10" placeholder="descriptioin")
         input(type="submit" value="Upload")  

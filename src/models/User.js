@@ -6,11 +6,17 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     avatarUrl: String,
-    socialOnly: { type: Boolean, default: false }
+    socialOnly: { type: Boolean, default: false },
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }]
 });
 
 userSchema.pre("save", async function (next) {
-    this.password = await bcrypt.hash(this.password, 5);
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 5);
+        return next();
+    } else {
+        return next();
+    }
 })
 
 export default mongoose.model("User", userSchema);

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema({
     title: { type: String, trim: true, required: true },
+    fileUrl: { type: String, required: true },
     description: { type: String, trim: true, required: true },
     createdAt: { type: Date, default: Date.now },
     meta: {
@@ -10,7 +11,7 @@ const videoSchema = new mongoose.Schema({
         disLike: { type: Number, default: 0 },
     },
     owner: {
-        type: mongoose.SchemaTypes.ObjectId, ref: "owner"
+        type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true
     }
 })
 

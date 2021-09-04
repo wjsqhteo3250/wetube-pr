@@ -9,6 +9,7 @@ import videoRouter from "./router/videoRouter";
 import userRouter from "./router/userRouter";
 import { localsMiddleware } from "./middlewares";
 import MongoStore from "connect-mongo";
+import flash from "express-flash";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL })
 }))
+app.use(flash());
 app.use(localsMiddleware);
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");

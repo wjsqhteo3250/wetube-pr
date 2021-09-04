@@ -7,6 +7,8 @@ html(lang="en")
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
         title= pageTitle
     body
+        if messages.error 
+            span= messages.error
         include partials/header
         main
             block content

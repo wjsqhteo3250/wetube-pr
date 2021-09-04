@@ -144,16 +144,28 @@ export const naverRedirect = async (req, res) => {
 
 export const profile = async (req, res) => {
     const { params: { id } } = req;
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate("videos");
+    if (!user) {
+        return res.redirect("/");
+    }
     return res.render("users/profile", { pageTitle: "profile", user });
 }
 
 export const getChangePassword = (req, res) => {
+    const { session: { user } } = req;
+    if (user.socialOnly) {
+        req.flash("error", "none social");
+        return res.status(403).redirect("/");
+    }
     res.render("users/changePassword", { pageTitle: "change password" })
 }
 
 export const postChangePassword = async (req, res) => {
     const { body: { oldPassword, newPassword, newPassword2 }, session: { user } } = req;
+    if (user.socialOnly) {
+        req.flash("error", "none social");
+        return res.status(403).redirect("/");
+    }
     const ok = await bcrypt.compare(oldPassword, user.password);
     if (!ok) {
         return res.render("users/changePassword", { pageTitle: "change password", errorMessage: "old password is not correct" })
