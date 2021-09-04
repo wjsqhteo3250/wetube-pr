@@ -15,6 +15,7 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
@@ -27,6 +28,7 @@ app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
 app.use("/uploads", express.static("uploads"));
+app.use("/js", express.static("js"));
 app.use("/", rootRouter);
 app.use("/video", videoRouter);
 app.use("/user", userRouter);

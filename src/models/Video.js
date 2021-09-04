@@ -12,7 +12,8 @@ const videoSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true
-    }
+    },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
 })
 
 const Video = mongoose.model("Video", videoSchema);

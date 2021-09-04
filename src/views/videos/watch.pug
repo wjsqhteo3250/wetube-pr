@@ -11,4 +11,16 @@ block content
             button update 
         form(method="post" action=`/video/${video._id}/delete`)
             input(type="submit", value="delete")
+    form.commentForm(data-id=video._id)
+        textarea(name="text", cols="30", rows="10")
+        button add comment
+    ul.commentList
+        each comment in video.comments.reverse()
+            li(data-id= comment._id)
+                span= comment.text
+                button X
+
+block script
+    script(src="/js/comment.js")
+    
         
